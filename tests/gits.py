@@ -40,6 +40,7 @@ class TestCommitsFunctionality(unittest.TestCase):
         status_code, body = self._get_commits()
         self.assertEqual(status_code, SUCCESS)
         self.assertEqual(body['commit']['author']['name'], 'n0mac')
+        self.assertEqual(body['commit']['author']['email'], 'smiling.n0mac@gmail.com')
 
     def _get_commits(self, identificator=None):
         _url = self.get_user_commit_by_sha
