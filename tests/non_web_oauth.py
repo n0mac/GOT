@@ -1,7 +1,6 @@
 import requests
 import unittest
 import json
-from requests.auth import HTTPBasicAuth
 
 class TestOauthNonWeb(unittest.TestCase):
 
@@ -27,13 +26,11 @@ class TestOauthNonWeb(unittest.TestCase):
 
     def _get_method(self):
         _payload = json.dumps({"note": "admin script", "scopes": "public_repo", "client_id": self.client_id, "client_secret": self.client_secret})
-        _response = requests.get(self.oauth_url, auth=('n0mac', 'pzhfg2910'), data=_payload)
-        print(_response.json())
+        _response = requests.get(self.oauth_url, auth=('tastytoste', 'qaztgb1029'), data=_payload)
         return _response.status_code
 
     def _post_method(self):
         _payload = json.dumps({"note": "admin script", "scopes": "public_repo", "client_id": self.client_id, "client_secret": self.client_secret})
-        _response = requests.post(self.oauth_url, auth=('n0mac', 'pzhfg2910'), data=_payload)
-        print(_response.json())
+        _response = requests.post(self.oauth_url, auth=('tastytoste', 'qaztgb1029'), data=_payload)
         return _response.status_code
 
