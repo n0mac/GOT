@@ -16,7 +16,7 @@ The following steps should get you set up for running API tests locally on your 
 
 1. Clone this repository to your local machine
 2. Open terminal or cmd and navigate to the project folder
-3. Run the tests commit tests using the command [python3 gits.py]
-4. Run the tests oauth tests using the command [python3 non_web_oauth.py]
+3. Run the commit tests using the command [python3 gits.py]
+4. Run the oauth tests using the command [python3 non_web_oauth.py]
 
 
