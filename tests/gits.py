@@ -10,24 +10,9 @@ ADDED = 201
 NOT_AUTHORIZED = 404
 REMOVED = 204
 
-GET_USER = "/users/{user}"
-GET_FOLLOWERS = "/followers"
-GET_USER_FOLLOWERS = "/users/{user}/followers"
-GET_USER_COMMITS = "/repos/{user}/{repo}/commits"
-GET_USER_COMMIT_BY_SHA2 = "/repos/{user}/{repo}/commits/{sha}"
-GET_USER_COMMIT_BY_SHA = "https://api.github.com/repos/{user}/{repo}/commits/{sha}"
-GET_USER_COMMIT_COMMENTS_URL = "https://api.github.com/repos/n0mac/trek/commits/e9bd1f80c0bb60bc4d248d36b2a1804ac07ae314/comments"
-GITHUB_AUTHORIZATIONS_URL = "https://api.github.com/authorizations"
-GITHUB_COMMENT_ID_URL = "https://api.github.com/repos/{user}/{repo}/comments/{id}"
 half = "token 3fa0860ed78de6453"
 life = "f79133f0ec71ac33b74a5a3"
 AUTH_TOKEN = half + life
-
-
-USER = "n0mac"
-REPO = "trek"
-SHA = "4ace7325787475b1a8e72b0e96da271187f19a99"
-
 
 class TestCommitsFunctionality(unittest.TestCase):
 
@@ -45,12 +30,16 @@ class TestCommitsFunctionality(unittest.TestCase):
         self.comment_id_url = "https://api.github.com/repos/{}/{}/comments/".format(self.user, self.repo)
 
     def test_commit_author(self):
+
+        # Check commit author's name and email
         status_code, body = self._get_commits()
         self.assertEqual(status_code, SUCCESS)
         self.assertEqual(body['commit']['author']['name'], 'n0mac')
         self.assertEqual(body['commit']['author']['email'], 'smiling.n0mac@gmail.com')
 
     def test_commit_committer(self):
+
+        # Check commit committer's name and email
         status_code, body = self._get_commits()
         self.assertEqual(status_code, SUCCESS)
         self.assertEqual(body['commit']['committer']['name'], 'n0mac')
@@ -58,13 +47,13 @@ class TestCommitsFunctionality(unittest.TestCase):
 
     def test_commits_comments_count(self):
 
-        # GET comments count
+        # GET comments count and confirm that we get int object
         status_code, body = self._get_commits()
         self.assertEqual(status_code, SUCCESS)
         self.assertTrue(body['commit']['comment_count'], int)
         self.comment_count = body['commit']['comment_count']
 
-        # Add new comment
+        # Add new comment and check its name
         status_code, body = self._add_comment()
         self.assertEqual(status_code, ADDED)
         self.assertEqual(body['body'], 'test1')
@@ -75,54 +64,55 @@ class TestCommitsFunctionality(unittest.TestCase):
         self.assertEqual(body['commit']['comment_count'], self.comment_count+1)
 
     def test_adding_comments_not_logged_in_user(self):
+
+        # Add comment without authorization token
         status_code, body = self._add_comment_not_logged_in()
         self.assertEqual(status_code, NOT_AUTHORIZED)
-        #self.assertEqual(body['body'], 'test')
 
     def test_removing_of_added_comment(self):
+
+        # Add new comment and get its id
         status_code, body = self._get_commits_comments()
         self.assertEqual(status_code, ADDED)
         self.comment_id = body["id"]
-        #self.assertEqual(body['id'], self.id)
 
+        # Remove comment that was added by its id
         status_code = self._remove_commits_comment()
         self.assertEqual(status_code, REMOVED)
 
     def test_updating_of_added_comment(self):
+
+        # Add new comment and get its id
         status_code, body = self._get_commits_comments()
         self.assertEqual(status_code, ADDED)
         self.comment_id = body["id"]
 
+        # Update comment by changing its body
         status_code, body = self._update_commit_comment()
         self.assertEqual(status_code, SUCCESS)
         self.assertEqual(body["body"], 'updated')
 
-
-    def _get_commits(self, identificator=None):
+    def _get_commits(self):
         _url = self.get_user_commit_by_sha
-        if identificator:
-            _url = "{}/{}".format(self.url, identificator)
         _response1 = requests.get(_url)
         json_o = json.loads(_response1.content)
         return _response1.status_code, json_o
 
-    def _update_commit_comment(self, identificator=None):
+    def _update_commit_comment(self):
         _header = {'Accept': DEFAULT_HEADER, 'Content-Type': DEFAULT_HEADER, 'Authorization': AUTH_TOKEN}
         _payload = json.dumps({'body': 'updated'})
         _response1 = requests.patch(self.comment_id_url+str(self.comment_id), headers=_header, data=_payload)
         json_o = json.loads(_response1.content)
-        print(_response1.json())
         return _response1.status_code, json_o
 
-    def _get_commits_comments(self, identificator=None):
+    def _get_commits_comments(self):
         _header = {'Accept': DEFAULT_HEADER, 'Content-Type': DEFAULT_HEADER, 'Authorization': AUTH_TOKEN}
         _payload = json.dumps({'body': 'test2', 'path': '', 'position': 4, 'line': None})
         _response1 = requests.post(self.get_user_commit_by_sha2, headers=_header, data=_payload)
         json_o = json.loads(_response1.content)
-        print(_response1.json())
         return _response1.status_code, json_o
 
-    def _remove_commits_comment(self, identificator=None):
+    def _remove_commits_comment(self):
         _header = {'Accept': DEFAULT_HEADER, 'Content-Type': DEFAULT_HEADER, 'Authorization': AUTH_TOKEN}
         _response1 = requests.delete(self.comment_id_url+str(self.comment_id), headers=_header)
         return _response1.status_code
@@ -131,13 +121,11 @@ class TestCommitsFunctionality(unittest.TestCase):
         _header = {'Accept': DEFAULT_HEADER, 'Content-Type': DEFAULT_HEADER,'Authorization': AUTH_TOKEN}
         _payload = json.dumps({'body': 'test1', 'path': '', 'position': 4, 'line': None})
         _response = requests.post(self.get_user_commit_by_sha2, headers=_header, data=_payload)
-        #print(_response.json())
         return _response.status_code, _response.json()
 
     def _add_comment_not_logged_in(self):
         _payload = json.dumps({'body': 'test1', 'path': '', 'position': 4, 'line': None})
         _response = requests.post(self.get_user_commit_by_sha2, data=_payload)
-        #print(_response.json())
         return _response.status_code, _response.json()
 
 
