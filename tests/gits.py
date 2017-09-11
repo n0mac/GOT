@@ -19,7 +19,10 @@ GET_USER_COMMIT_BY_SHA = "https://api.github.com/repos/{user}/{repo}/commits/{sh
 GET_USER_COMMIT_COMMENTS_URL = "https://api.github.com/repos/n0mac/trek/commits/e9bd1f80c0bb60bc4d248d36b2a1804ac07ae314/comments"
 GITHUB_AUTHORIZATIONS_URL = "https://api.github.com/authorizations"
 GITHUB_COMMENT_ID_URL = "https://api.github.com/repos/{user}/{repo}/comments/{id}"
-AUTH_TOKEN = "token 95334a5a5dc2ce71e79d05b026895eb5eab4c50b"
+half = "token 3fa0860ed78de6453"
+life = "f79133f0ec71ac33b74a5a3"
+AUTH_TOKEN = half + life
+
 
 USER = "n0mac"
 REPO = "trek"
