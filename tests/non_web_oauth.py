@@ -34,3 +34,6 @@ class TestOauthNonWeb(unittest.TestCase):
         _response = requests.post(self.oauth_url, auth=('tastytoste', 'qaztgb1029'), data=_payload)
         return _response.status_code
 
+if __name__ == '__main__':
+    unittest.main()
+

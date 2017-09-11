@@ -1,6 +1,8 @@
 import requests
 import unittest
 import json
+import sys
+import subprocess
 
 DEFAULT_HEADER = 'application/json'
 
@@ -128,7 +130,7 @@ class TestCommitsFunctionality(unittest.TestCase):
         _response = requests.post(self.get_user_commit_by_sha2, data=_payload)
         return _response.status_code, _response.json()
 
-
-
+if __name__ == '__main__':
+    unittest.main()
 
 
